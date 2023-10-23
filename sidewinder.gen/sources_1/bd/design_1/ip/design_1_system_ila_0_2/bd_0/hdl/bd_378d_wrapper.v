@@ -40,7 +40,7 @@ module bd_378d_wrapper
   input SLOT_2_AXIS_tlast;
   input SLOT_2_AXIS_tready;
   input SLOT_2_AXIS_tvalid;
-  input [31:0]SLOT_3_AXIS_tdata;
+  input [63:0]SLOT_3_AXIS_tdata;
   input SLOT_3_AXIS_tlast;
   input SLOT_3_AXIS_tready;
   input SLOT_3_AXIS_tvalid;
@@ -62,7 +62,7 @@ module bd_378d_wrapper
   wire SLOT_2_AXIS_tlast;
   wire SLOT_2_AXIS_tready;
   wire SLOT_2_AXIS_tvalid;
-  wire [31:0]SLOT_3_AXIS_tdata;
+  wire [63:0]SLOT_3_AXIS_tdata;
   wire SLOT_3_AXIS_tlast;
   wire SLOT_3_AXIS_tready;
   wire SLOT_3_AXIS_tvalid;

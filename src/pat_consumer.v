@@ -2,7 +2,7 @@
 module pat_consumer #
 (
     parameter PATTERN_WIDTH = 32,
-    parameter OUTPUT_WIDTH  = 32   
+    parameter OUTPUT_WIDTH  = 64   
 )
 (
     input clk, resetn,
@@ -18,7 +18,7 @@ module pat_consumer #
 
     //=========================   The output stream   ==========================
     output [OUTPUT_WIDTH-1:0] AXIS_OUT_TDATA,
-    output                    AXIS_OUT_TVALID,
+    output reg                AXIS_OUT_TVALID,
     output                    AXIS_OUT_TLAST,
     input                     AXIS_OUT_TREADY
     //==========================================================================
@@ -26,7 +26,7 @@ module pat_consumer #
 
 );
     localparam CYCLES_PER_ROW = 4;
-    localparam ROWS_PER_FRAME = 5;
+    localparam ROWS_PER_FRAME = 3;
 
     // This is the number of times that the input pattern can fit across the output bus
     localparam PATTERN_REPEATS = OUTPUT_WIDTH / PATTERN_WIDTH;
@@ -43,12 +43,13 @@ module pat_consumer #
     //====================================================================================
 
     //====================================================================================
-    reg[1:0] osm_state;
-    reg[31:0] cycles_remaining, rows_remaining;
+    reg       osm_state;
+    reg[31:0] cycles_remaining;  // Number of cycles left in this row
+    reg[31:0] rows_remaining;    // Number of rows left in this frame
 
-    assign AXIS_OUT_TLAST = (cycles_remaining == 0);
+    assign AXIS_OUT_TLAST  = (cycles_remaining == 0);
     assign AXIS_OUT_TVALID = (osm_state == 1);
-    assign AXIS_IN_TREADY = 1; //?(resetn == 1 && osm_state == 0);
+    assign AXIS_IN_TREADY  = (resetn == 1 && osm_state == 0);
     //====================================================================================
 
 
@@ -56,7 +57,8 @@ module pat_consumer #
 
         // If we're being held in reset...
         if (resetn == 0) begin
-            osm_state <= 0;
+            osm_state       <= 0;
+            AXIS_OUT_TVALID <= 0;
 
         end else case(osm_state)
 
@@ -67,6 +69,7 @@ module pat_consumer #
                     pattern          <= AXIS_IN_TDATA;
                     cycles_remaining <= CYCLES_PER_ROW - 1;
                     rows_remaining   <= ROWS_PER_FRAME - 1;
+                    AXIS_OUT_TVALID  <= 1;
                     osm_state        <= 1;
                 end
 
@@ -79,6 +82,7 @@ module pat_consumer #
                     // If this was the last data-cycle of this row...
                     if (AXIS_OUT_TLAST) begin
                         if (rows_remaining == 0) begin
+                            AXIS_OUT_TVALID  <= 1;
                             osm_state        <= 0;
                         end else begin
                             rows_remaining   <= rows_remaining - 1;

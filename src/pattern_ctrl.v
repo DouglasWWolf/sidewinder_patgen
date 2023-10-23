@@ -250,7 +250,13 @@ module pattern_ctrl #
                         end
 
                     // Don't allow the user to attempt to start both FIFOs at once
-                    REG_START:     if (ashi_wdata[1:0] != 2'b11) fifo_on_deck <= ashi_wdata;
+                    REG_START:
+                        if      (ashi_wdata[1:0] == 2'b01 && f0_count)
+                            fifo_on_deck <= ashi_wdata;
+                        else if (ashi_wdata[1:0] == 2'b10 && f1_count)
+                            fifo_on_deck <= ashi_wdata;
+                        else
+                            fifo_on_deck <= 0;
 
                     REG_INPUT_00:  input_value[ 0 * 32 +: 32] <= ashi_wdata;
                     REG_INPUT_01:  input_value[ 1 * 32 +: 32] <= ashi_wdata;
@@ -391,13 +397,17 @@ module pattern_ctrl #
     //  f1out_tready
     //
     // "osm" means "output state machine"
+    //
+    // When reading this state machine, keep in mind that when AXIS_OUT_TVALID is low,
+    // it means we're not outputting any data to the output stream and we're waiting to
+    // be told which FIFO to output from
     //====================================================================================
     reg       osm_state;
     reg[15:0] osm_counter;
 
     // The data being driven out on AXIS_OUT_TDATA is the output of one of the FIFOs
     assign AXIS_OUT_TDATA = (active_fifo == 1) ? f0out_tdata :
-                            (active_fifo == 2) ? f1out_tdata : 8'h42;
+                            (active_fifo == 2) ? f1out_tdata : 8'h55;
 
     assign f0out_tready = (active_fifo == 1) ? AXIS_OUT_TREADY : 0;
     assign f1out_tready = (active_fifo == 2) ? AXIS_OUT_TREADY : 0;                                
@@ -411,14 +421,13 @@ module pattern_ctrl #
         
         end else case(osm_state)
 
-                // If we've been told to start outputing from fifo_0...
+            
             0:  begin
                     AXIS_OUT_TVALID <= 0;
                     osm_state <= 1;
                 end
                 
-            // Here we sit in a loop streaming data from a FIFO to 
-            // the output stream as fast as the output stream allows.
+            // If we're waiting for a start command or this data-cycle is a handshake on AXIS_OUT...
             1:  if (AXIS_OUT_TVALID == 0 || (AXIS_OUT_TVALID & AXIS_OUT_TREADY)) begin
                     
                     // Don't forget that this doesn't take effect until the end of the cycle!
@@ -428,14 +437,14 @@ module pattern_ctrl #
                     if (AXIS_OUT_TVALID == 0 || osm_counter == 1) begin
 
                         // If we've been told to start outputting from fifo_0...    
-                        if (fifo_on_deck == 1 && f0_count) begin
+                        if (fifo_on_deck == 1) begin
                             active_fifo     <= 1;
                             osm_counter     <= f0_count;
                             AXIS_OUT_TVALID <= 1;
                         end else
 
                         // If we've been told to start outputting from fifo_1....
-                        if (fifo_on_deck == 2 && f1_count) begin
+                        if (fifo_on_deck == 2) begin
                             active_fifo     <= 2;
                             osm_counter     <= f1_count;
                             AXIS_OUT_TVALID <= 1;

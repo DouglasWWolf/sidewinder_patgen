@@ -3407,6 +3407,90 @@
         <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[0]"/>
       </nets>
     </probe>
+    <probe type="ila" busType="bus" source="netlist" spec="ILA_V2_RT">
+      <probeOptions Id="DebugProbeParams">
+        <Option Id="CAPTURE_COMPARE_VALUE" value="eq64&apos;hXXXX_XXXX_XXXX_XXXX"/>
+        <Option Id="COMPARE_VALUE.0" value="eq64&apos;hXXXX_XXXX_XXXX_XXXX"/>
+        <Option Id="DISPLAY_AS_ENUM" value="1"/>
+        <Option Id="DISPLAY_HINT" value=""/>
+        <Option Id="DISPLAY_RADIX" value="HEX"/>
+        <Option Id="DISPLAY_VISIBILITY" value=""/>
+        <Option Id="HW_ILA" value="hw_ila_3"/>
+        <Option Id="LINK_TO_WAVEFORM" value="1"/>
+        <Option Id="MAP" value="probe15[63:0]"/>
+        <Option Id="NAME.CUSTOM" value="slot_3 : pat_consumer_0_AXIS_OUT : TDATA"/>
+        <Option Id="NAME.SELECT" value="Custom"/>
+        <Option Id="SOURCE" value="netlist"/>
+        <Option Id="TRIGGER_COMPARE_VALUE" value="eq64&apos;hXXXX_XXXX_XXXX_XXXX"/>
+        <Option Id="WAVEFORM_STYLE" value="Digital"/>
+      </probeOptions>
+      <nets>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[63]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[62]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[61]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[60]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[59]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[58]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[57]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[56]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[55]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[54]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[53]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[52]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[51]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[50]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[49]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[48]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[47]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[46]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[45]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[44]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[43]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[42]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[41]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[40]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[39]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[38]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[37]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[36]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[35]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[34]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[33]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[32]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[31]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[30]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[29]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[28]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[27]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[26]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[25]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[24]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[23]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[22]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[21]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[20]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[19]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[18]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[17]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[16]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[15]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[14]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[13]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[12]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[11]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[10]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[9]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[8]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[7]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[6]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[5]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[4]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[3]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[2]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[1]"/>
+        <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tdata[0]"/>
+      </nets>
+    </probe>
     <probe type="ila" busType="net" source="netlist" spec="ILA_V2_RT">
       <probeOptions Id="DebugProbeParams">
         <Option Id="CAPTURE_COMPARE_VALUE" value="eq1&apos;bX"/>
@@ -3418,8 +3502,8 @@
         <Option Id="HW_ILA" value="hw_ila_3"/>
         <Option Id="LINK_TO_WAVEFORM" value="1"/>
         <Option Id="MAP" value="probe18[0]"/>
-        <Option Id="NAME.CUSTOM" value=""/>
-        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="NAME.CUSTOM" value="slot_3 : pat_consumer_0_AXIS_OUT : TLAST"/>
+        <Option Id="NAME.SELECT" value="Custom"/>
         <Option Id="SOURCE" value="netlist"/>
         <Option Id="TRIGGER_COMPARE_VALUE" value="eq1&apos;bX"/>
         <Option Id="WAVEFORM_STYLE" value="Digital"/>
@@ -3439,8 +3523,8 @@
         <Option Id="HW_ILA" value="hw_ila_3"/>
         <Option Id="LINK_TO_WAVEFORM" value="1"/>
         <Option Id="MAP" value="probe17[0]"/>
-        <Option Id="NAME.CUSTOM" value=""/>
-        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="NAME.CUSTOM" value="slot_3 : pat_consumer_0_AXIS_OUT : TREADY"/>
+        <Option Id="NAME.SELECT" value="Custom"/>
         <Option Id="SOURCE" value="netlist"/>
         <Option Id="TRIGGER_COMPARE_VALUE" value="eq1&apos;bX"/>
         <Option Id="WAVEFORM_STYLE" value="Digital"/>
@@ -3460,11 +3544,13 @@
         <Option Id="HW_ILA" value="hw_ila_3"/>
         <Option Id="LINK_TO_WAVEFORM" value="1"/>
         <Option Id="MAP" value="probe16[0]"/>
-        <Option Id="NAME.CUSTOM" value=""/>
-        <Option Id="NAME.SELECT" value="Long"/>
+        <Option Id="NAME.CUSTOM" value="slot_3 : pat_consumer_0_AXIS_OUT : TVALID"/>
+        <Option Id="NAME.SELECT" value="Custom"/>
         <Option Id="SOURCE" value="netlist"/>
         <Option Id="TRIGGER_COMPARE_VALUE" value="eq1&apos;bX"/>
         <Option Id="WAVEFORM_STYLE" value="Digital"/>
+        <Option Id="ENUM.iSTATE" value="eq1&apos;b0"/>
+        <Option Id="ENUM.iSTATE0" value="eq1&apos;b1"/>
       </probeOptions>
       <nets>
         <net name="design_1_i/system_ila_0/inst/net_slot_3_axis_tvalid"/>

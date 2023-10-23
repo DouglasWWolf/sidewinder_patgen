@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xC46953206C2EE61A",
+      "boundary_crc": "0x45BF72EAD4D0312B",
       "design_src": "SBD",
       "device": "xczu19eg-ffvc1760-2-i",
       "name": "bd_378d",
@@ -211,7 +211,7 @@
             "value_src": "default"
           },
           "HAS_TLAST": {
-            "value": "0",
+            "value": "1",
             "value_src": "default"
           },
           "HAS_TREADY": {
@@ -235,7 +235,7 @@
             "value_src": "default"
           },
           "TDATA_NUM_BYTES": {
-            "value": "1",
+            "value": "8",
             "value_src": "default"
           },
           "TDEST_WIDTH": {
@@ -396,7 +396,7 @@
             "value": "0"
           },
           "C_PROBE15_WIDTH": {
-            "value": "32"
+            "value": "64"
           },
           "C_PROBE16_TYPE": {
             "value": "0"
@@ -587,7 +587,7 @@
             "value": "FT"
           },
           "C_SLOT_3_AXIS_TDATA_WIDTH": {
-            "value": "8"
+            "value": "64"
           },
           "C_SLOT_3_AXIS_TDEST_WIDTH": {
             "value": "0"
