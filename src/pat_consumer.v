@@ -1,4 +1,5 @@
 
+
 module pat_consumer #
 (
     parameter PATTERN_WIDTH = 32,
@@ -6,8 +7,6 @@ module pat_consumer #
 )
 (
     input clk, resetn,
-
-    output reg[PATTERN_WIDTH-1:0] data,
 
     //=========================   The input stream   ===========================
     input [PATTERN_WIDTH-1:0] AXIS_IN_TDATA,
@@ -20,9 +19,9 @@ module pat_consumer #
     output [OUTPUT_WIDTH-1:0] AXIS_OUT_TDATA,
     output reg                AXIS_OUT_TVALID,
     output                    AXIS_OUT_TLAST,
-    input                     AXIS_OUT_TREADY
+    input                     AXIS_OUT_TREADY,
+    output                    alt_out_valid
     //==========================================================================
-
 
 );
     localparam CYCLES_PER_ROW = 4;
@@ -40,6 +39,8 @@ module pat_consumer #
         assign AXIS_OUT_TDATA[i*PATTERN_WIDTH +: PATTERN_WIDTH] = pattern;
     end 
 
+    assign alt_out_valid = AXIS_OUT_TVALID;
+
     //====================================================================================
 
     //====================================================================================
@@ -47,9 +48,20 @@ module pat_consumer #
     reg[31:0] cycles_remaining;  // Number of cycles left in this row
     reg[31:0] rows_remaining;    // Number of rows left in this frame
 
+    // This signal will be high during the handshake of the last data-cycle of a frame
+    wire last_cycle_in_frame =  (
+                                    AXIS_OUT_TVALID  == 1 &&
+                                    AXIS_OUT_TREADY  == 1 &&
+                                    cycles_remaining == 0 &&
+                                    rows_remaining   == 0
+                                );
+
+    // Define when we're ready to accept a new pattern on the input stream    
+    assign AXIS_IN_TREADY  = (resetn == 1 && osm_state == 0) ? 1 :
+                             (resetn == 1 && osm_state == 1 && last_cycle_in_frame) ? 1 : 0;
+    
+    // The TLAST signal on the output stream should be high on the last cycle of a row
     assign AXIS_OUT_TLAST  = (cycles_remaining == 0);
-    assign AXIS_OUT_TVALID = (osm_state == 1);
-    assign AXIS_IN_TREADY  = (resetn == 1 && osm_state == 0);
     //====================================================================================
 
 
@@ -59,7 +71,8 @@ module pat_consumer #
         if (resetn == 0) begin
             osm_state       <= 0;
             AXIS_OUT_TVALID <= 0;
-
+          
+        // Otherwise, run the state machine
         end else case(osm_state)
 
             // Here we wait for a valid-data cycle to arrive on the input stream.
@@ -76,18 +89,37 @@ module pat_consumer #
             // Every time we output a data-cycle...
             1:  if (AXIS_OUT_TVALID & AXIS_OUT_TREADY) begin
                     
-                    // Keep track of how many data cycles remain for this row
-                    cycles_remaining <= cycles_remaining - 1;
-                    
                     // If this was the last data-cycle of this row...
-                    if (AXIS_OUT_TLAST) begin
+                    if (cycles_remaining == 0) begin
+
+                        // Reload the counter for the next row
+                        cycles_remaining <= CYCLES_PER_ROW - 1;
+
+                        // If this was the last row of this frame
                         if (rows_remaining == 0) begin
-                            AXIS_OUT_TVALID  <= 1;
-                            osm_state        <= 0;
+                            
+                            // Reload the counter for the next frame
+                            rows_remaining <= ROWS_PER_FRAME - 1;
+
+                            // If there's a new pattern available on the input stream...
+                            if (AXIS_IN_TVALID & AXIS_IN_TREADY) begin
+                                pattern <= AXIS_IN_TDATA;
+                            end
+                            
+                            // Otherwise, if there's not a new input pattern, go wait for one
+                            else begin
+                                osm_state <= 0;
+                                AXIS_OUT_TVALID <= 0;
+                            end
+
+                        // If this wasn't the last row of the frame, just count down rows
                         end else begin
-                            rows_remaining   <= rows_remaining - 1;
-                            cycles_remaining <= CYCLES_PER_ROW - 1;
+                            rows_remaining <= rows_remaining - 1;
                         end
+                    
+                    // If this wasn't the last data-cycle of the row, just count down data-cycles
+                    end else begin
+                        cycles_remaining <= cycles_remaining - 1;
                     end
                 end
 

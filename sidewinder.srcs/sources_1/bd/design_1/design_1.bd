@@ -47,6 +47,7 @@
       "data_generator_1": "",
       "system_ila_0": "",
       "pattern_control": "",
+      "pat_sink_0": "",
       "pat_consumer_0": ""
     },
     "interface_ports": {
@@ -567,11 +568,6 @@
           "data_aresetn": {
             "type": "rst",
             "direction": "I"
-          },
-          "probe0": {
-            "direction": "I",
-            "left": "31",
-            "right": "0"
           }
         },
         "components": {
@@ -1455,7 +1451,7 @@
                 "value": "2048"
               },
               "C_MON_TYPE": {
-                "value": "MIX"
+                "value": "INTERFACE"
               },
               "C_NUM_MONITOR_SLOTS": {
                 "value": "2"
@@ -1974,17 +1970,6 @@
                 "value": "true"
               },
               "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
-          },
-          "probe0_1": {
-            "ports": [
-              "probe0",
-              "tx_data_ila/probe0"
-            ],
-            "hdl_attributes": {
-              "DEBUG": {
                 "value": "true"
               }
             }
@@ -3723,7 +3708,7 @@
             "value": "4"
           },
           "C_NUM_OF_PROBES": {
-            "value": "3"
+            "value": "6"
           },
           "C_SLOT": {
             "value": "3"
@@ -4233,6 +4218,125 @@
           }
         }
       },
+      "pat_sink_0": {
+        "vlnv": "xilinx.com:module_ref:pat_sink:1.0",
+        "xci_name": "design_1_pat_sink_0_0",
+        "xci_path": "ip/design_1_pat_sink_0_0/design_1_pat_sink_0_0.xci",
+        "inst_hier_path": "pat_sink_0",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "pat_sink",
+          "boundary_crc": "0x0"
+        },
+        "interface_ports": {
+          "AXIS_RX": {
+            "mode": "Slave",
+            "vlnv_bus_definition": "xilinx.com:interface:axis:1.0",
+            "vlnv": "xilinx.com:interface:axis_rtl:1.0",
+            "parameters": {
+              "TDATA_NUM_BYTES": {
+                "value": "8",
+                "value_src": "constant"
+              },
+              "TDEST_WIDTH": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "TID_WIDTH": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "TUSER_WIDTH": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "HAS_TREADY": {
+                "value": "1",
+                "value_src": "constant"
+              },
+              "HAS_TSTRB": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "HAS_TKEEP": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "HAS_TLAST": {
+                "value": "1",
+                "value_src": "constant"
+              },
+              "FREQ_HZ": {
+                "value": "250000000",
+                "value_src": "user_prop"
+              },
+              "CLK_DOMAIN": {
+                "value": "design_1_xdma_0_0_axi_aclk",
+                "value_src": "default_prop"
+              }
+            },
+            "port_maps": {
+              "TDATA": {
+                "physical_name": "AXIS_RX_TDATA",
+                "direction": "I",
+                "left": "63",
+                "right": "0"
+              },
+              "TLAST": {
+                "physical_name": "AXIS_RX_TLAST",
+                "direction": "I"
+              },
+              "TVALID": {
+                "physical_name": "AXIS_RX_TVALID",
+                "direction": "I"
+              },
+              "TREADY": {
+                "physical_name": "AXIS_RX_TREADY",
+                "direction": "O"
+              }
+            }
+          }
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "ASSOCIATED_BUSIF": {
+                "value": "AXIS_RX",
+                "value_src": "constant"
+              },
+              "ASSOCIATED_RESET": {
+                "value": "resetn",
+                "value_src": "constant"
+              },
+              "FREQ_HZ": {
+                "value": "250000000",
+                "value_src": "user_prop"
+              },
+              "CLK_DOMAIN": {
+                "value": "design_1_xdma_0_0_axi_aclk",
+                "value_src": "default_prop"
+              }
+            }
+          },
+          "resetn": {
+            "type": "rst",
+            "direction": "I",
+            "parameters": {
+              "POLARITY": {
+                "value": "ACTIVE_LOW",
+                "value_src": "constant"
+              }
+            }
+          },
+          "packet_id": {
+            "direction": "O",
+            "left": "31",
+            "right": "0"
+          }
+        }
+      },
       "pat_consumer_0": {
         "vlnv": "xilinx.com:module_ref:pat_consumer:1.0",
         "xci_name": "design_1_pat_consumer_0_0",
@@ -4408,10 +4512,8 @@
               }
             }
           },
-          "data": {
-            "direction": "O",
-            "left": "31",
-            "right": "0"
+          "alt_out_valid": {
+            "direction": "O"
           }
         }
       }
@@ -4462,6 +4564,7 @@
       "pat_consumer_0_AXIS_OUT": {
         "interface_ports": [
           "pat_consumer_0/AXIS_OUT",
+          "pat_sink_0/AXIS_RX",
           "system_ila_0/SLOT_3_AXIS"
         ]
       },
@@ -4566,20 +4669,6 @@
       }
     },
     "nets": {
-      "data": {
-        "ports": [
-          "pat_consumer_0/data",
-          "qsfp_data/probe0"
-        ],
-        "hdl_attributes": {
-          "DEBUG": {
-            "value": "true"
-          },
-          "MARK_DEBUG": {
-            "value": "true"
-          }
-        }
-      },
       "ext_reset_in_0_1": {
         "ports": [
           "pb_rst_n",
@@ -4600,7 +4689,20 @@
           "data_generator_1/clk",
           "system_ila_0/clk",
           "pattern_control/clk",
+          "pat_sink_0/clk",
           "pat_consumer_0/clk"
+        ]
+      },
+      "pat_consumer_0_alt_out_valid": {
+        "ports": [
+          "pat_consumer_0/alt_out_valid",
+          "system_ila_0/probe4"
+        ]
+      },
+      "pat_sink_0_packet_id": {
+        "ports": [
+          "pat_sink_0/packet_id",
+          "system_ila_0/probe3"
         ]
       },
       "pattern_control_DBG_ACTIVE_FIFO": {
@@ -4654,6 +4756,7 @@
           "data_generator_0/resetn",
           "data_generator_1/resetn",
           "pattern_control/resetn",
+          "pat_sink_0/resetn",
           "pat_consumer_0/resetn"
         ]
       },

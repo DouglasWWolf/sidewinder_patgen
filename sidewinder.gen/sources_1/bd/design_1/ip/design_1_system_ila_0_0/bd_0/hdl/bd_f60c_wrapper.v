@@ -18,7 +18,6 @@ module bd_f60c_wrapper
     SLOT_1_AXIS_tready,
     SLOT_1_AXIS_tvalid,
     clk,
-    probe0,
     resetn);
   input [511:0]SLOT_0_AXIS_tdata;
   input [63:0]SLOT_0_AXIS_tkeep;
@@ -31,7 +30,6 @@ module bd_f60c_wrapper
   input SLOT_1_AXIS_tready;
   input SLOT_1_AXIS_tvalid;
   input clk;
-  input [31:0]probe0;
   input resetn;
 
   wire [511:0]SLOT_0_AXIS_tdata;
@@ -45,7 +43,6 @@ module bd_f60c_wrapper
   wire SLOT_1_AXIS_tready;
   wire SLOT_1_AXIS_tvalid;
   wire clk;
-  wire [31:0]probe0;
   wire resetn;
 
   bd_f60c bd_f60c_i
@@ -60,6 +57,5 @@ module bd_f60c_wrapper
         .SLOT_1_AXIS_tready(SLOT_1_AXIS_tready),
         .SLOT_1_AXIS_tvalid(SLOT_1_AXIS_tvalid),
         .clk(clk),
-        .probe0(probe0),
         .resetn(resetn));
 endmodule
