@@ -80,7 +80,7 @@ preplace inst system_interconnect -pg 1 -lvl 2 -x 590 -y 60 -swap {118 1 2 3 4 5
 preplace inst simframe -pg 1 -lvl 3 -x 860 -y 140 -defaultsOSRD -pinDir S_AXI left -pinY S_AXI 0L -pinDir AXIS_OUT right -pinY AXIS_OUT 20R -pinDir clk left -pinY clk 20L -pinDir resetn left -pinY resetn 40L
 preplace inst data_sink -pg 1 -lvl 5 -x 1540 -y 140 -swap {0 1 2 3 4 6 5 7} -defaultsOSRD -pinDir AXIS_RX left -pinY AXIS_RX 0L -pinDir clk left -pinY clk 40L -pinDir resetn left -pinY resetn 20L -pinBusDir data right -pinBusY data 0R
 preplace inst axi_revision -pg 1 -lvl 3 -x 860 -y 270 -defaultsOSRD -pinDir S_AXI left -pinY S_AXI 0L -pinDir AXI_ACLK left -pinY AXI_ACLK 20L -pinDir AXI_ARESETN left -pinY AXI_ARESETN 40L
-preplace inst output_select -pg 1 -lvl 4 -x 1170 -y 140 -swap {15 1 2 3 4 5 6 7 8 9 10 11 12 13 14 0 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 36 35} -defaultsOSRD -pinDir AXIS_RX left -pinY AXIS_RX 20L -pinDir AXIS_TX0 right -pinY AXIS_TX0 0R -pinDir AXIS_TX1 right -pinY AXIS_TX1 170R -pinDir S_AXI left -pinY S_AXI 0L -pinDir clk left -pinY clk 170L -pinDir resetn left -pinY resetn 150L
+preplace inst output_router -pg 1 -lvl 4 -x 1170 -y 140 -swap {15 1 2 3 4 5 6 7 8 9 10 11 12 13 14 0 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 36 35} -defaultsOSRD -pinDir AXIS_RX left -pinY AXIS_RX 20L -pinDir AXIS_TX0 right -pinY AXIS_TX0 0R -pinDir AXIS_TX1 right -pinY AXIS_TX1 170R -pinDir S_AXI left -pinY S_AXI 0L -pinDir clk left -pinY clk 170L -pinDir resetn left -pinY resetn 150L
 preplace netloc ext_reset_in_0_1 1 0 1 NJ 680
 preplace netloc ila_250mhz 1 1 4 430 430 730 430 1030 430 1370
 preplace netloc pcie_axi_bridge_led_pci_link_up 1 1 5 NJ 470 NJ 470 990 60 1350 480 N
@@ -111,7 +111,7 @@ levelinfo -pg 1 0 210 590 860 1170 1540 1730
 pagesize -pg 1 -db -bbox -sgen -140 0 1890 840
 ",
    "No Loops_ScaleFactor":"0.870856",
-   "No Loops_TopLeft":"-134,-63",
+   "No Loops_TopLeft":"-134,-76",
    "Reduced Jogs_ExpandedHierarchyInLayout":"",
    "Reduced Jogs_Layout":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
 #  -string -flagsOSRD
