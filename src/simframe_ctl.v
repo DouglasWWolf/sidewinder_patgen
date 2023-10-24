@@ -17,9 +17,6 @@
 */
 
 
-
-
-
 module simframe_ctl #
 (
     parameter PATTERN_WIDTH = 32    
@@ -63,10 +60,16 @@ module simframe_ctl #
     //=========================   The output stream   ==========================
     output [PATTERN_WIDTH-1:0] AXIS_OUT_TDATA,
     output reg                 AXIS_OUT_TVALID,
-    input                      AXIS_OUT_TREADY
+    input                      AXIS_OUT_TREADY,
     //==========================================================================
 
+
+    //=========  These configure the geometry of the generated frame  ==========
+    output reg[15:0] CYCLES_PER_ROW,
+    output reg[15:0] ROWS_PER_FRAME
+    //==========================================================================    
 );  
+
     // Any time the register map of this module changes, this number should
     // be bumped
     localparam MODULE_VERSION = 1;
@@ -80,12 +83,16 @@ module simframe_ctl #
         localparam BIT_F0_LOAD  = 2;    /*  WO   */
         localparam BIT_F1_LOAD  = 3;    /*  WO   */
 
-    localparam REG_START    = 2;       
+    localparam REG_LOAD_F0 = 2;         /*  R/W  */
+    localparam REG_LOAD_F1 = 3;         /*  R/W  */
+    
+    localparam REG_START = 4;            
         localparam BIT_F0_START = 0;    /*  R/W  */
         localparam BIT_F1_START = 1;    /*  R/W  */
 
-    localparam REG_F0_COUNT = 3;        /*  RO   */
-    localparam REG_F1_COUNT = 4;        /*  RO   */
+    localparam REG_CYCLES_PER_ROW = 5;  /*  R/W  */
+    localparam REG_ROWS_PER_FRAME = 6;  /*  R/W  */
+
 
     localparam REG_INPUT_00 = 16;       /*  R/W  */
     localparam REG_INPUT_01 = 17;       /*  R/W  */
@@ -141,6 +148,9 @@ module simframe_ctl #
     // (128 bytes is 32 32-bit registers)
     localparam ADDR_MASK = 7'h7F;
 
+    // Coming out of reset, these are the default values of CYCLES_PER_ROW and ROWS_PER_FRAME
+    localparam DEFAULT_CYCLES_PER_ROW = 32;
+    localparam DEFAULT_ROWS_PER_FRAME = 2048;
 
     // When one of these counters is non-zero, the associated FIFO is held in reset
     reg[2:0] f0_reset_counter, f1_reset_counter;
@@ -212,6 +222,8 @@ module simframe_ctl #
             f0_count         <= 0;
             f1_count         <= 0;
             fifo_on_deck     <= 0;
+            CYCLES_PER_ROW   <= DEFAULT_CYCLES_PER_ROW;
+            ROWS_PER_FRAME   <= DEFAULT_ROWS_PER_FRAME;
 
         // If we're not in reset, and a write-request has occured...        
         end else case (axi4_write_state)
@@ -255,6 +267,23 @@ module simframe_ctl #
                         
                         end
 
+                    // Is the user doing an "immediate" load of fifo_0?
+                    REG_LOAD_F0:
+                        begin
+                            input_value      <= ashi_wdata;
+                            fifo_load_strobe <= 1;
+                            f0_count         <= f0_count + 1;
+                        end
+
+                    // Is the user doing an "immediate" load of fifo_1?
+                    REG_LOAD_F1:
+                        begin
+                            input_value      <= ashi_wdata;
+                            fifo_load_strobe <= 2;
+                            f0_count         <= f1_count + 1;
+                        end
+
+
                     // Don't allow the user to attempt to start both FIFOs at once
                     REG_START:
                         if      (ashi_wdata[1:0] == 2'b01 && f0_count)
@@ -264,6 +293,15 @@ module simframe_ctl #
                         else
                             fifo_on_deck <= 0;
 
+                    // Allow the user to configure the number of data-cycles per row
+                    REG_CYCLES_PER_ROW:
+                        if (ashi_wdata) CYCLES_PER_ROW <= ashi_wdata;
+                    
+                    // Allow the user to configure the number or rows per frame
+                    REG_ROWS_PER_FRAME:
+                        if (ashi_wdata) ROWS_PER_FRAME <= ashi_wdata;
+
+                    // Allow the user to store values into the "input" field
                     REG_INPUT_00:  input_value[ 0 * 32 +: 32] <= ashi_wdata;
                     REG_INPUT_01:  input_value[ 1 * 32 +: 32] <= ashi_wdata;
                     REG_INPUT_02:  input_value[ 2 * 32 +: 32] <= ashi_wdata;
@@ -318,28 +356,29 @@ module simframe_ctl #
             case ((ashi_raddr & ADDR_MASK) >> 2)
  
                 // Allow a read from any valid register                
-                REG_MODULE_VER: ashi_rdata <= MODULE_VERSION;
-                REG_FIFO_CTL:   ashi_rdata <= {f1_reset, f0_reset};
-                REG_START:      ashi_rdata <= active_fifo;
-                REG_F0_COUNT:   ashi_rdata <= f0_count;
-                REG_F1_COUNT:   ashi_rdata <= f1_count;
-               
-                REG_INPUT_00:   ashi_rdata <= input_value[ 0 * 32 +: 32];
-                REG_INPUT_01:   ashi_rdata <= input_value[ 1 * 32 +: 32];
-                REG_INPUT_02:   ashi_rdata <= input_value[ 2 * 32 +: 32];
-                REG_INPUT_03:   ashi_rdata <= input_value[ 3 * 32 +: 32];
-                REG_INPUT_04:   ashi_rdata <= input_value[ 4 * 32 +: 32];
-                REG_INPUT_05:   ashi_rdata <= input_value[ 5 * 32 +: 32];
-                REG_INPUT_06:   ashi_rdata <= input_value[ 6 * 32 +: 32];
-                REG_INPUT_07:   ashi_rdata <= input_value[ 7 * 32 +: 32];
-                REG_INPUT_08:   ashi_rdata <= input_value[ 8 * 32 +: 32];
-                REG_INPUT_09:   ashi_rdata <= input_value[ 9 * 32 +: 32];
-                REG_INPUT_10:   ashi_rdata <= input_value[10 * 32 +: 32];
-                REG_INPUT_11:   ashi_rdata <= input_value[11 * 32 +: 32];
-                REG_INPUT_12:   ashi_rdata <= input_value[12 * 32 +: 32];
-                REG_INPUT_13:   ashi_rdata <= input_value[13 * 32 +: 32];
-                REG_INPUT_14:   ashi_rdata <= input_value[14 * 32 +: 32];
-                REG_INPUT_15:   ashi_rdata <= input_value[15 * 32 +: 32];
+                REG_MODULE_VER:     ashi_rdata <= MODULE_VERSION;
+                REG_FIFO_CTL:       ashi_rdata <= {f1_reset, f0_reset};
+                REG_LOAD_F0:        ashi_rdata <= f0_count;
+                REG_LOAD_F1:        ashi_rdata <= f1_count;
+                REG_START:          ashi_rdata <= active_fifo;
+                REG_CYCLES_PER_ROW: ashi_rdata <= CYCLES_PER_ROW;
+                REG_ROWS_PER_FRAME: ashi_rdata <= ROWS_PER_FRAME;
+                REG_INPUT_00:       ashi_rdata <= input_value[ 0 * 32 +: 32];
+                REG_INPUT_01:       ashi_rdata <= input_value[ 1 * 32 +: 32];
+                REG_INPUT_02:       ashi_rdata <= input_value[ 2 * 32 +: 32];
+                REG_INPUT_03:       ashi_rdata <= input_value[ 3 * 32 +: 32];
+                REG_INPUT_04:       ashi_rdata <= input_value[ 4 * 32 +: 32];
+                REG_INPUT_05:       ashi_rdata <= input_value[ 5 * 32 +: 32];
+                REG_INPUT_06:       ashi_rdata <= input_value[ 6 * 32 +: 32];
+                REG_INPUT_07:       ashi_rdata <= input_value[ 7 * 32 +: 32];
+                REG_INPUT_08:       ashi_rdata <= input_value[ 8 * 32 +: 32];
+                REG_INPUT_09:       ashi_rdata <= input_value[ 9 * 32 +: 32];
+                REG_INPUT_10:       ashi_rdata <= input_value[10 * 32 +: 32];
+                REG_INPUT_11:       ashi_rdata <= input_value[11 * 32 +: 32];
+                REG_INPUT_12:       ashi_rdata <= input_value[12 * 32 +: 32];
+                REG_INPUT_13:       ashi_rdata <= input_value[13 * 32 +: 32];
+                REG_INPUT_14:       ashi_rdata <= input_value[14 * 32 +: 32];
+                REG_INPUT_15:       ashi_rdata <= input_value[15 * 32 +: 32];
 
                 // Reads of any other register are a decode-error
                 default: ashi_rresp <= DECERR;
