@@ -1,8 +1,24 @@
+//====================================================================================
+//                        ------->  Revision History  <------
+//====================================================================================
+//
+//   Date     Who   Ver  Changes
+//====================================================================================
+// 25-Oct-23  DWW     1  Initial creation
+//====================================================================================
+
 /*
+    The purpose of this module is to stream out byte patterns that have been recorded  
+    in a FIFO.   There are two input FIFOs, and only one at a time can be streaming out
+    its contents.
 
-
-
+    Whenever a byte is extracted from a FIFO it is written back into that FIFO so that
+    the vector of values in the FIFO can be re-used in a continuous loop.
 */
+
+
+
+
 
 module simframe_ctl #
 (
@@ -51,37 +67,44 @@ module simframe_ctl #
     //==========================================================================
 
 );  
+    // Any time the register map of this module changes, this number should
+    // be bumped
+    localparam MODULE_VERSION = 1;
 
-    localparam REG_FIFO_CTL = 0;
+    //=========================  AXI Register Map  =============================
+    localparam REG_MODULE_VER = 0;      /*  RO   */
+
+    localparam REG_FIFO_CTL = 1;
         localparam BIT_F0_RESET = 0;    /*  R/W  */
         localparam BIT_F1_RESET = 1;    /*  R/W  */
         localparam BIT_F0_LOAD  = 2;    /*  WO   */
         localparam BIT_F1_LOAD  = 3;    /*  WO   */
 
-    localparam REG_START    = 1;       
+    localparam REG_START    = 2;       
         localparam BIT_F0_START = 0;    /*  R/W  */
         localparam BIT_F1_START = 1;    /*  R/W  */
 
-    localparam REG_F0_COUNT = 2;        /*  RO  */
-    localparam REG_F1_COUNT = 3;        /*  RO  */
+    localparam REG_F0_COUNT = 3;        /*  RO   */
+    localparam REG_F1_COUNT = 4;        /*  RO   */
 
-    localparam REG_INPUT_00 = 16;
-    localparam REG_INPUT_01 = 17;
-    localparam REG_INPUT_02 = 18;
-    localparam REG_INPUT_03 = 19;
-    localparam REG_INPUT_04 = 20;
-    localparam REG_INPUT_05 = 21;
-    localparam REG_INPUT_06 = 22;
-    localparam REG_INPUT_07 = 23;
-    localparam REG_INPUT_08 = 24;
-    localparam REG_INPUT_09 = 25;
-    localparam REG_INPUT_10 = 26;
-    localparam REG_INPUT_11 = 27;
-    localparam REG_INPUT_12 = 28;
-    localparam REG_INPUT_13 = 29;
-    localparam REG_INPUT_14 = 30;
-    localparam REG_INPUT_15 = 31;
-    
+    localparam REG_INPUT_00 = 16;       /*  R/W  */
+    localparam REG_INPUT_01 = 17;       /*  R/W  */
+    localparam REG_INPUT_02 = 18;       /*  R/W  */
+    localparam REG_INPUT_03 = 19;       /*  R/W  */
+    localparam REG_INPUT_04 = 20;       /*  R/W  */
+    localparam REG_INPUT_05 = 21;       /*  R/W  */
+    localparam REG_INPUT_06 = 22;       /*  R/W  */
+    localparam REG_INPUT_07 = 23;       /*  R/W  */
+    localparam REG_INPUT_08 = 24;       /*  R/W  */
+    localparam REG_INPUT_09 = 25;       /*  R/W  */
+    localparam REG_INPUT_10 = 26;       /*  R/W  */
+    localparam REG_INPUT_11 = 27;       /*  R/W  */
+    localparam REG_INPUT_12 = 28;       /*  R/W  */
+    localparam REG_INPUT_13 = 29;       /*  R/W  */
+    localparam REG_INPUT_14 = 30;       /*  R/W  */
+    localparam REG_INPUT_15 = 31;       /*  R/W  */
+    //==========================================================================
+
 
     //==========================================================================
     // We'll communicate with the AXI4-Lite Slave core with these signals.
@@ -293,29 +316,30 @@ module simframe_ctl #
             
             // Convert the byte address into a register index
             case ((ashi_raddr & ADDR_MASK) >> 2)
-
+ 
                 // Allow a read from any valid register                
-                REG_FIFO_CTL:  ashi_rdata <= {f1_reset, f0_reset};
-                REG_START:     ashi_rdata <= active_fifo;
-                REG_F0_COUNT:  ashi_rdata <= f0_count;
-                REG_F1_COUNT:  ashi_rdata <= f1_count;
+                REG_MODULE_VER: ashi_rdata <= MODULE_VERSION;
+                REG_FIFO_CTL:   ashi_rdata <= {f1_reset, f0_reset};
+                REG_START:      ashi_rdata <= active_fifo;
+                REG_F0_COUNT:   ashi_rdata <= f0_count;
+                REG_F1_COUNT:   ashi_rdata <= f1_count;
                
-                REG_INPUT_00:  ashi_rdata <= input_value[ 0 * 32 +: 32];
-                REG_INPUT_01:  ashi_rdata <= input_value[ 1 * 32 +: 32];
-                REG_INPUT_02:  ashi_rdata <= input_value[ 2 * 32 +: 32];
-                REG_INPUT_03:  ashi_rdata <= input_value[ 3 * 32 +: 32];
-                REG_INPUT_04:  ashi_rdata <= input_value[ 4 * 32 +: 32];
-                REG_INPUT_05:  ashi_rdata <= input_value[ 5 * 32 +: 32];
-                REG_INPUT_06:  ashi_rdata <= input_value[ 6 * 32 +: 32];
-                REG_INPUT_07:  ashi_rdata <= input_value[ 7 * 32 +: 32];
-                REG_INPUT_08:  ashi_rdata <= input_value[ 8 * 32 +: 32];
-                REG_INPUT_09:  ashi_rdata <= input_value[ 9 * 32 +: 32];
-                REG_INPUT_10:  ashi_rdata <= input_value[10 * 32 +: 32];
-                REG_INPUT_11:  ashi_rdata <= input_value[11 * 32 +: 32];
-                REG_INPUT_12:  ashi_rdata <= input_value[12 * 32 +: 32];
-                REG_INPUT_13:  ashi_rdata <= input_value[13 * 32 +: 32];
-                REG_INPUT_14:  ashi_rdata <= input_value[14 * 32 +: 32];
-                REG_INPUT_15:  ashi_rdata <= input_value[15 * 32 +: 32];
+                REG_INPUT_00:   ashi_rdata <= input_value[ 0 * 32 +: 32];
+                REG_INPUT_01:   ashi_rdata <= input_value[ 1 * 32 +: 32];
+                REG_INPUT_02:   ashi_rdata <= input_value[ 2 * 32 +: 32];
+                REG_INPUT_03:   ashi_rdata <= input_value[ 3 * 32 +: 32];
+                REG_INPUT_04:   ashi_rdata <= input_value[ 4 * 32 +: 32];
+                REG_INPUT_05:   ashi_rdata <= input_value[ 5 * 32 +: 32];
+                REG_INPUT_06:   ashi_rdata <= input_value[ 6 * 32 +: 32];
+                REG_INPUT_07:   ashi_rdata <= input_value[ 7 * 32 +: 32];
+                REG_INPUT_08:   ashi_rdata <= input_value[ 8 * 32 +: 32];
+                REG_INPUT_09:   ashi_rdata <= input_value[ 9 * 32 +: 32];
+                REG_INPUT_10:   ashi_rdata <= input_value[10 * 32 +: 32];
+                REG_INPUT_11:   ashi_rdata <= input_value[11 * 32 +: 32];
+                REG_INPUT_12:   ashi_rdata <= input_value[12 * 32 +: 32];
+                REG_INPUT_13:   ashi_rdata <= input_value[13 * 32 +: 32];
+                REG_INPUT_14:   ashi_rdata <= input_value[14 * 32 +: 32];
+                REG_INPUT_15:   ashi_rdata <= input_value[15 * 32 +: 32];
 
                 // Reads of any other register are a decode-error
                 default: ashi_rresp <= DECERR;

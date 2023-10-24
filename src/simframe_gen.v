@@ -1,3 +1,18 @@
+//====================================================================================
+//                        ------->  Revision History  <------
+//====================================================================================
+//
+//   Date     Who   Ver  Changes
+//====================================================================================
+// 25-Oct-23  DWW     1  Initial creation
+//====================================================================================
+
+/*
+    The purpose of this module is to stream in bit patterns that are of fixed at 8,
+    16, 32, 64, 128, 256, or 512 bits wide, and replicate that pattern across the 
+    width of an output stream, writing sufficient data cycles to comprise an entire
+    4 million cell frame.
+*/
 
 
 module simframe_gen #
@@ -23,8 +38,11 @@ module simframe_gen #
     //==========================================================================
 
 );
-    localparam CYCLES_PER_ROW = 4;
-    localparam ROWS_PER_FRAME = 3;
+    localparam CELLS_PER_ROW = 2048;
+    localparam CELLS_PER_FRAME = 4 * 1024 * 1024
+    localparam BYTES_PER_CYCLE = OUTPUT_WIDTH / 8;
+    localparam CYCLES_PER_ROW = CELLS_PER_ROW / BYTES_PER_CYCLE;
+    localparam ROWS_PER_FRAME = CELLS_PER_FRAME / CELLS_PER_ROW;
 
     // This is the number of times that the input pattern can fit across the output bus
     localparam PATTERN_REPEATS = OUTPUT_WIDTH / PATTERN_WIDTH;
