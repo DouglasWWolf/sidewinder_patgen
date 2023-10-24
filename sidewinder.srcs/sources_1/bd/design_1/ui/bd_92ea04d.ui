@@ -45,8 +45,8 @@ preplace netloc store_and_forward_M_AXIS 1 1 1 N 90
 levelinfo -pg 1 0 150 540 900 1090
 pagesize -pg 1 -db -bbox -sgen -180 0 1240 710
 ",
-   "No Loops_ScaleFactor":"0.953521",
-   "No Loops_TopLeft":"-255,0",
+   "No Loops_ScaleFactor":"1.0",
+   "No Loops_TopLeft":"-350,-66",
    "guistr":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
 #  -string -flagsOSRD
 preplace port qsfp_gt -pg 1 -lvl 5 -x 1410 -y 90 -defaultsOSRD

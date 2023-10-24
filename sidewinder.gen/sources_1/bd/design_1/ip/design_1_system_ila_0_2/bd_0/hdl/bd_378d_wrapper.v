@@ -15,70 +15,28 @@ module bd_378d_wrapper
     SLOT_1_AXIS_tlast,
     SLOT_1_AXIS_tready,
     SLOT_1_AXIS_tvalid,
-    SLOT_2_AXIS_tdata,
-    SLOT_2_AXIS_tlast,
-    SLOT_2_AXIS_tready,
-    SLOT_2_AXIS_tvalid,
-    SLOT_3_AXIS_tdata,
-    SLOT_3_AXIS_tlast,
-    SLOT_3_AXIS_tready,
-    SLOT_3_AXIS_tvalid,
     clk,
-    probe0,
-    probe1,
-    probe2,
-    probe3,
-    probe4,
-    probe5,
     resetn);
   input [31:0]SLOT_0_AXIS_tdata;
   input SLOT_0_AXIS_tlast;
   input SLOT_0_AXIS_tready;
   input SLOT_0_AXIS_tvalid;
-  input [31:0]SLOT_1_AXIS_tdata;
+  input [511:0]SLOT_1_AXIS_tdata;
   input SLOT_1_AXIS_tlast;
   input SLOT_1_AXIS_tready;
   input SLOT_1_AXIS_tvalid;
-  input [31:0]SLOT_2_AXIS_tdata;
-  input SLOT_2_AXIS_tlast;
-  input SLOT_2_AXIS_tready;
-  input SLOT_2_AXIS_tvalid;
-  input [63:0]SLOT_3_AXIS_tdata;
-  input SLOT_3_AXIS_tlast;
-  input SLOT_3_AXIS_tready;
-  input SLOT_3_AXIS_tvalid;
   input clk;
-  input [0:0]probe0;
-  input [1:0]probe1;
-  input [1:0]probe2;
-  input [31:0]probe3;
-  input [0:0]probe4;
-  input [0:0]probe5;
   input resetn;
 
   wire [31:0]SLOT_0_AXIS_tdata;
   wire SLOT_0_AXIS_tlast;
   wire SLOT_0_AXIS_tready;
   wire SLOT_0_AXIS_tvalid;
-  wire [31:0]SLOT_1_AXIS_tdata;
+  wire [511:0]SLOT_1_AXIS_tdata;
   wire SLOT_1_AXIS_tlast;
   wire SLOT_1_AXIS_tready;
   wire SLOT_1_AXIS_tvalid;
-  wire [31:0]SLOT_2_AXIS_tdata;
-  wire SLOT_2_AXIS_tlast;
-  wire SLOT_2_AXIS_tready;
-  wire SLOT_2_AXIS_tvalid;
-  wire [63:0]SLOT_3_AXIS_tdata;
-  wire SLOT_3_AXIS_tlast;
-  wire SLOT_3_AXIS_tready;
-  wire SLOT_3_AXIS_tvalid;
   wire clk;
-  wire [0:0]probe0;
-  wire [1:0]probe1;
-  wire [1:0]probe2;
-  wire [31:0]probe3;
-  wire [0:0]probe4;
-  wire [0:0]probe5;
   wire resetn;
 
   bd_378d bd_378d_i
@@ -90,20 +48,6 @@ module bd_378d_wrapper
         .SLOT_1_AXIS_tlast(SLOT_1_AXIS_tlast),
         .SLOT_1_AXIS_tready(SLOT_1_AXIS_tready),
         .SLOT_1_AXIS_tvalid(SLOT_1_AXIS_tvalid),
-        .SLOT_2_AXIS_tdata(SLOT_2_AXIS_tdata),
-        .SLOT_2_AXIS_tlast(SLOT_2_AXIS_tlast),
-        .SLOT_2_AXIS_tready(SLOT_2_AXIS_tready),
-        .SLOT_2_AXIS_tvalid(SLOT_2_AXIS_tvalid),
-        .SLOT_3_AXIS_tdata(SLOT_3_AXIS_tdata),
-        .SLOT_3_AXIS_tlast(SLOT_3_AXIS_tlast),
-        .SLOT_3_AXIS_tready(SLOT_3_AXIS_tready),
-        .SLOT_3_AXIS_tvalid(SLOT_3_AXIS_tvalid),
         .clk(clk),
-        .probe0(probe0),
-        .probe1(probe1),
-        .probe2(probe2),
-        .probe3(probe3),
-        .probe4(probe4),
-        .probe5(probe5),
         .resetn(resetn));
 endmodule

@@ -1,9 +1,9 @@
 
 
-module pat_consumer #
+module simframe_gen #
 (
     parameter PATTERN_WIDTH = 32,
-    parameter OUTPUT_WIDTH  = 64   
+    parameter OUTPUT_WIDTH  = 512   
 )
 (
     input clk, resetn,
@@ -22,7 +22,6 @@ module pat_consumer #
     input                     AXIS_OUT_TREADY
     //==========================================================================
 
-
 );
     localparam CYCLES_PER_ROW = 4;
     localparam ROWS_PER_FRAME = 3;
@@ -40,7 +39,7 @@ module pat_consumer #
     end 
 
     //====================================================================================
-
+    // Output state machine - Drives rows of frame data out to the output stream
     //====================================================================================
     reg       osm_state;
     reg[31:0] cycles_remaining;  // Number of cycles left in this row
@@ -60,8 +59,8 @@ module pat_consumer #
     
     // The TLAST signal on the output stream should be high on the last cycle of a row
     assign AXIS_OUT_TLAST  = (cycles_remaining == 0);
-    //====================================================================================
 
+    //------------------------------------------------------------------------------------
 
     always @(posedge clk) begin
 
@@ -70,7 +69,7 @@ module pat_consumer #
             osm_state       <= 0;
             AXIS_OUT_TVALID <= 0;
           
-
+        // Otherwise, run the state machine
         end else case(osm_state)
 
             // Here we wait for a valid-data cycle to arrive on the input stream.
@@ -102,9 +101,10 @@ module pat_consumer #
                             // If there's a new pattern available on the input stream...
                             if (AXIS_IN_TVALID & AXIS_IN_TREADY) begin
                                 pattern <= AXIS_IN_TDATA;
+                            end
                             
                             // Otherwise, if there's not a new input pattern, go wait for one
-                            end else begin
+                            else begin
                                 osm_state <= 0;
                                 AXIS_OUT_TVALID <= 0;
                             end
@@ -113,6 +113,7 @@ module pat_consumer #
                         end else begin
                             rows_remaining <= rows_remaining - 1;
                         end
+                    
                     // If this wasn't the last data-cycle of the row, just count down data-cycles
                     end else begin
                         cycles_remaining <= cycles_remaining - 1;
@@ -120,8 +121,9 @@ module pat_consumer #
                 end
 
         endcase
-
     end
+    //====================================================================================
+
 
 endmodule
 
