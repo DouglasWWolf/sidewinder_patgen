@@ -39,7 +39,7 @@ module simframe_gen #
 
 );
     localparam CELLS_PER_ROW = 2048;
-    localparam CELLS_PER_FRAME = 4 * 1024 * 1024
+    localparam CELLS_PER_FRAME = 4 * 1024 * 1024;
     localparam BYTES_PER_CYCLE = OUTPUT_WIDTH / 8;
     localparam CYCLES_PER_ROW = CELLS_PER_ROW / BYTES_PER_CYCLE;
     localparam ROWS_PER_FRAME = CELLS_PER_FRAME / CELLS_PER_ROW;
