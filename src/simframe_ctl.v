@@ -75,7 +75,7 @@ module simframe_ctl #
     localparam MODULE_VERSION = 1;
 
     //=========================  AXI Register Map  =============================
-    localparam REG_MODULE_VER = 0;      /*  RO   */
+    localparam REG_MODULE_REV = 0;      /*  RO   */
 
     localparam REG_FIFO_CTL = 1;
         localparam BIT_F0_RESET = 0;    /*  R/W  */
@@ -204,6 +204,8 @@ module simframe_ctl #
     //   fifo_load_strobe
     //   input_value
     //   fifo_on_deck   
+    //   CYCLES_PER_ROW
+    //   ROWS_PER_FRAME
     //==========================================================================
     always @(posedge clk) begin
 
@@ -240,27 +242,27 @@ module simframe_ctl #
                         begin
                             
                             // If the user wants to clear fifo_0...
-                            if (ashi_wdata[BIT_F0_RESET]) begin
+                            if (ashi_wdata[BIT_F0_RESET] && ~active_fifo[0]) begin
                                 f0_count         <= 0;
                                 f0_reset_counter <= -1;
                                 axi4_write_state <= 1;    
                             end
                             
                             // If the user wants to clear fifo_1...
-                            if (ashi_wdata[BIT_F1_RESET]) begin
+                            if (ashi_wdata[BIT_F1_RESET] && ~active_fifo[1]) begin
                                 f1_count         <= 0;
                                 f1_reset_counter <= -1;
                                 axi4_write_state <= 1;
                             end   
                             
                             // If the user wants to load fifo_0...
-                            if (ashi_wdata[BIT_F0_LOAD ]) begin
+                            if (ashi_wdata[BIT_F0_LOAD ] && ~active_fifo[0]) begin
                                 fifo_load_strobe[0] <= 1;
                                 f0_count            <= f0_count + 1;
                             end
                             
                             // If the user wants to load fifo_1...
-                            if (ashi_wdata[BIT_F1_LOAD ]) begin
+                            if (ashi_wdata[BIT_F1_LOAD ] && ~active_fifo[1]) begin
                                 fifo_load_strobe[1] <= 1;
                                 f1_count            <= f1_count + 1;
                             end
@@ -269,7 +271,7 @@ module simframe_ctl #
 
                     // Is the user doing an "immediate" load of fifo_0?
                     REG_LOAD_F0:
-                        begin
+                        if (~active_fifo[0]) begin
                             input_value      <= ashi_wdata;
                             fifo_load_strobe <= 1;
                             f0_count         <= f0_count + 1;
@@ -277,7 +279,7 @@ module simframe_ctl #
 
                     // Is the user doing an "immediate" load of fifo_1?
                     REG_LOAD_F1:
-                        begin
+                        if (~active_fifo[1]) begin
                             input_value      <= ashi_wdata;
                             fifo_load_strobe <= 2;
                             f0_count         <= f1_count + 1;
@@ -286,20 +288,20 @@ module simframe_ctl #
 
                     // Don't allow the user to attempt to start both FIFOs at once
                     REG_START:
-                        if      (ashi_wdata[1:0] == 2'b01 && f0_count)
+                        if      (ashi_wdata[1:0] == 2'b00)
+                            fifo_on_deck <= 0;
+                        else if (ashi_wdata[1:0] == 2'b01 && f0_count)
                             fifo_on_deck <= ashi_wdata;
                         else if (ashi_wdata[1:0] == 2'b10 && f1_count)
                             fifo_on_deck <= ashi_wdata;
-                        else
-                            fifo_on_deck <= 0;
 
                     // Allow the user to configure the number of data-cycles per row
                     REG_CYCLES_PER_ROW:
-                        if (ashi_wdata) CYCLES_PER_ROW <= ashi_wdata;
+                        if (ashi_wdata && ~active_fifo) CYCLES_PER_ROW <= ashi_wdata;
                     
                     // Allow the user to configure the number or rows per frame
                     REG_ROWS_PER_FRAME:
-                        if (ashi_wdata) ROWS_PER_FRAME <= ashi_wdata;
+                        if (ashi_wdata && ~active_fifo) ROWS_PER_FRAME <= ashi_wdata;
 
                     // Allow the user to store values into the "input" field
                     REG_INPUT_00:  input_value[ 0 * 32 +: 32] <= ashi_wdata;
@@ -356,7 +358,7 @@ module simframe_ctl #
             case ((ashi_raddr & ADDR_MASK) >> 2)
  
                 // Allow a read from any valid register                
-                REG_MODULE_VER:     ashi_rdata <= MODULE_VERSION;
+                REG_MODULE_REV:     ashi_rdata <= MODULE_VERSION;
                 REG_FIFO_CTL:       ashi_rdata <= {f1_reset, f0_reset};
                 REG_LOAD_F0:        ashi_rdata <= f0_count;
                 REG_LOAD_F1:        ashi_rdata <= f1_count;
