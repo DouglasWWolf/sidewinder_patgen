@@ -1,1 +1,4 @@
-# sidewinder_patgen
+# Simframe Reference Design
+
+![Design Schematic](/image/design.png)
+
