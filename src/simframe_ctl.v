@@ -153,7 +153,7 @@ module simframe_ctl #
     localparam DEFAULT_ROWS_PER_FRAME = 2048;
 
     // When one of these counters is non-zero, the associated FIFO is held in reset
-    reg[2:0] f0_reset_counter, f1_reset_counter;
+    reg[3:0] f0_reset_counter, f1_reset_counter;
 
     // These two wires control the reset input of the FIFOs
     wire f0_reset = (resetn == 0 || f0_reset_counter != 0);
