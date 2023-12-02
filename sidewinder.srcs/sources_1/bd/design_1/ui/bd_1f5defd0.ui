@@ -111,7 +111,7 @@ levelinfo -pg 1 0 210 590 860 1170 1540 1730
 pagesize -pg 1 -db -bbox -sgen -140 0 1890 840
 ",
    "No Loops_ScaleFactor":"1.0",
-   "No Loops_TopLeft":"-360,-249",
+   "No Loops_TopLeft":"393,56",
    "Reduced Jogs_ExpandedHierarchyInLayout":"",
    "Reduced Jogs_Layout":"# # String gsaved with Nlview 7.0r4  2019-12-20 bk=1.5203 VDI=41 GEI=36 GUI=JA:10.0 TLS
 #  -string -flagsOSRD

@@ -65,8 +65,8 @@ module simframe_ctl #
 
 
     //=========  These configure the geometry of the generated frame  ==========
-    output reg[15:0] CYCLES_PER_ROW,
-    output reg[15:0] ROWS_PER_FRAME
+    output reg[15:0] CYCLES_PER_PKT,
+    output reg[15:0] PKTS_PER_FRAME
     //==========================================================================    
 );  
 
@@ -90,9 +90,8 @@ module simframe_ctl #
         localparam BIT_F0_START = 0;    /*  R/W  */
         localparam BIT_F1_START = 1;    /*  R/W  */
 
-    localparam REG_CYCLES_PER_ROW = 5;  /*  R/W  */
-    localparam REG_ROWS_PER_FRAME = 6;  /*  R/W  */
-
+    localparam REG_CYCLES_PER_PKT = 5;  /*  R/W  */
+    localparam REG_PKTS_PER_FRAME = 6;  /*  R/W  */
 
     localparam REG_INPUT_00 = 16;       /*  R/W  */
     localparam REG_INPUT_01 = 17;       /*  R/W  */
@@ -148,9 +147,9 @@ module simframe_ctl #
     // (128 bytes is 32 32-bit registers)
     localparam ADDR_MASK = 7'h7F;
 
-    // Coming out of reset, these are the default values of CYCLES_PER_ROW and ROWS_PER_FRAME
-    localparam DEFAULT_CYCLES_PER_ROW = 32;
-    localparam DEFAULT_ROWS_PER_FRAME = 2048;
+    // Coming out of reset, these are the default values of CYCLES_PER_PKT and PKTS_PER_FRAME
+    localparam DEFAULT_CYCLES_PER_PKT = 32;
+    localparam DEFAULT_PKTS_PER_FRAME = 2048;
 
     // When one of these counters is non-zero, the associated FIFO is held in reset
     reg[3:0] f0_reset_counter, f1_reset_counter;
@@ -204,8 +203,8 @@ module simframe_ctl #
     //   fifo_load_strobe
     //   input_value
     //   fifo_on_deck   
-    //   CYCLES_PER_ROW
-    //   ROWS_PER_FRAME
+    //   CYCLES_PER_PKT
+    //   PKTS_PER_FRAME
     //==========================================================================
     always @(posedge clk) begin
 
@@ -224,8 +223,8 @@ module simframe_ctl #
             f0_count         <= 0;
             f1_count         <= 0;
             fifo_on_deck     <= 0;
-            CYCLES_PER_ROW   <= DEFAULT_CYCLES_PER_ROW;
-            ROWS_PER_FRAME   <= DEFAULT_ROWS_PER_FRAME;
+            CYCLES_PER_PKT   <= DEFAULT_CYCLES_PER_PKT;
+            PKTS_PER_FRAME   <= DEFAULT_PKTS_PER_FRAME;
 
         // If we're not in reset, and a write-request has occured...        
         end else case (axi4_write_state)
@@ -295,13 +294,13 @@ module simframe_ctl #
                         else if (ashi_wdata[1:0] == 2'b10 && f1_count)
                             fifo_on_deck <= ashi_wdata;
 
-                    // Allow the user to configure the number of data-cycles per row
-                    REG_CYCLES_PER_ROW:
-                        if (ashi_wdata && ~active_fifo) CYCLES_PER_ROW <= ashi_wdata;
+                    // Allow the user to configure the number of data-cycles per packet
+                    REG_CYCLES_PER_PKT:
+                        if (ashi_wdata && ~active_fifo) CYCLES_PER_PKT <= ashi_wdata;
                     
-                    // Allow the user to configure the number or rows per frame
-                    REG_ROWS_PER_FRAME:
-                        if (ashi_wdata && ~active_fifo) ROWS_PER_FRAME <= ashi_wdata;
+                    // Allow the user to configure the number of packets per frame
+                    REG_PKTS_PER_FRAME:
+                        if (ashi_wdata && ~active_fifo) PKTS_PER_FRAME <= ashi_wdata;
 
                     // Allow the user to store values into the "input" field
                     REG_INPUT_00:  input_value[ 0 * 32 +: 32] <= ashi_wdata;
@@ -363,8 +362,8 @@ module simframe_ctl #
                 REG_LOAD_F0:        ashi_rdata <= f0_count;
                 REG_LOAD_F1:        ashi_rdata <= f1_count;
                 REG_START:          ashi_rdata <= active_fifo;
-                REG_CYCLES_PER_ROW: ashi_rdata <= CYCLES_PER_ROW;
-                REG_ROWS_PER_FRAME: ashi_rdata <= ROWS_PER_FRAME;
+                REG_CYCLES_PER_PKT: ashi_rdata <= CYCLES_PER_PKT;
+                REG_PKTS_PER_FRAME: ashi_rdata <= PKTS_PER_FRAME;
                 REG_INPUT_00:       ashi_rdata <= input_value[ 0 * 32 +: 32];
                 REG_INPUT_01:       ashi_rdata <= input_value[ 1 * 32 +: 32];
                 REG_INPUT_02:       ashi_rdata <= input_value[ 2 * 32 +: 32];
